@@ -12,9 +12,7 @@ class RabbitMQConnection {
 		this.connected = true
 
 		try {
-			this.connection = await client.connect(
-				`amqp://${env.RMQ_USER}:${env.RMQ_PASSWORD}@${env.RMQ_HOST}:${env.RMQ_PORT}`,
-			)
+			this.connection = await client.connect("amqp://admin:admin@localhost?5672");
 
 			this.channel = await this.connection.createChannel()
 		} catch (error) {
