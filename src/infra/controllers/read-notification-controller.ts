@@ -9,7 +9,7 @@ export async function readNotificationController(_: Request, res: Response) {
 
 		return res
 			.status(200)
-			.json({ success: true, message: result.content.toString() })
+			.json({ success: true, message: JSON.parse(result.content.toString()) })
 	} catch (error: unknown) {
 		if (error instanceof Error) {
 			return res.status(408).json({ success: false, message: error.message })

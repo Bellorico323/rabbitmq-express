@@ -22,14 +22,21 @@ class RabbitMQConnection {
 		}
 	}
 
-	async sendToQueue(queue: string, message: unknown) {
+	async sendToQueue(exchange: string, queue: string, message: unknown) {
 		try {
 			if (!this.channel) {
 				await this.connect()
 			}
 
-			await this.channel.assertQueue(queue)
-			this.channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)))
+			await this.channel.assertExchange(exchange, "direct", { durable: false })
+			await this.channel.assertQueue(queue, { durable: true })
+			await this.channel.bindQueue(queue, exchange, queue)
+
+			this.channel.publish(
+				exchange,
+				queue,
+				Buffer.from(JSON.stringify(message)),
+			)
 
 			console.log(`📩 Mensagem enviada para a fila "${queue}":`, message)
 		} catch (error) {
